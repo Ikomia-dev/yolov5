@@ -362,8 +362,6 @@ def train(hyp, opt, device, tb_writer=None, wandb=None, on_epoch_end=None):
                     'val/box_loss', 'val/obj_loss', 'val/cls_loss',  # val loss
                     'x/lr0', 'x/lr1', 'x/lr2']  # params
             for x, tag in zip(list(mloss[:-1]) + list(results) + lr, tags):
-                print(tag)
-                print(x)
                 if tb_writer:
                     tb_writer.add_scalar(tag, x, epoch)  # tensorboard
                 if wandb:
