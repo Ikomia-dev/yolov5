@@ -19,8 +19,10 @@ def gsutil_getsize(url=''):
 def attempt_download(weights):
     # Attempt to download pretrained weights if not found locally
     weights = str(weights).strip().replace("'", '')
-    file = Path(weights).name.lower()
+    if os.path.isfile(weights):
+        return
 
+    file = Path(weights).name.lower()
     msg = weights + ' missing, try downloading from https://github.com/ultralytics/yolov5/releases/'
     response = requests.get('https://api.github.com/repos/ultralytics/yolov5/releases/latest').json()  # github api
     assets = [x['name'] for x in response['assets']]  # release assets, i.e. ['yolov5s.pt', 'yolov5m.pt', ...]
