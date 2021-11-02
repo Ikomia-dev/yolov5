@@ -7,4 +7,3 @@ recursive-include data *.yaml
 recursive-include models *.yaml
 recursive-include utils *.txt
 recursive-include utils *.yaml
-recursive-include weights *.sh
