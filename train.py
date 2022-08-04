@@ -14,7 +14,6 @@ import random
 import time
 from copy import deepcopy
 from pathlib import Path
-import sys
 import numpy as np
 import torch
 import torch.distributed as dist
@@ -46,6 +45,7 @@ from yolov5.utils.loggers.wandb.wandb_utils import check_wandb_resume
 from yolov5.utils.metrics import fitness
 from yolov5.utils.loggers import Loggers
 from yolov5.utils.callbacks import Callbacks
+from yolov5.utils.torch_utils import torch_load
 
 LOGGER = logging.getLogger(__name__)
 LOCAL_RANK = int(os.getenv('LOCAL_RANK', -1))  # https://pytorch.org/docs/stable/elastic/run.html
@@ -110,12 +110,7 @@ def train(hyp,  # path/to/hyp.yaml or hyp dictionary
     if pretrained:
         with torch_distributed_zero_first(LOCAL_RANK):
             weights = attempt_download(weights)  # download if not found locally
-        # add yolov5 folder to python path just to load the model then remove it
-        yolov5_folder = str(ROOT)
-        if yolov5_folder not in sys.path:
-            sys.path.append(yolov5_folder)
-        ckpt = torch.load(weights, map_location=device)  # load checkpoint
-        sys.path.remove(yolov5_folder)
+        ckpt = torch_load(weights, device)
         model = Model(cfg or ckpt['model'].yaml, ch=3, nc=nc, anchors=hyp.get('anchors')).to(device)  # create
         exclude = ['anchor'] if (cfg or hyp.get('anchors')) and not resume else []  # exclude keys
         csd = ckpt['model'].float().state_dict()  # checkpoint state_dict as FP32

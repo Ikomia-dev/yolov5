@@ -13,6 +13,7 @@ import time
 from contextlib import contextmanager
 from copy import deepcopy
 from pathlib import Path
+import sys
 
 import torch
 import torch.distributed as dist
@@ -281,6 +282,20 @@ def copy_attr(a, b, include=(), exclude=()):
             continue
         else:
             setattr(a, k, v)
+
+
+def torch_load(weights, device):
+    yolov5_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    # add yolov5 folder to python path just to load the model then remove it
+    if yolov5_folder not in sys.path:
+        sys.path.append(yolov5_folder)
+    modules_before = set([m for m in sys.modules.values() if hasattr(m, "__name__")])
+    ckpt = torch.load(weights, map_location=device)  # load checkpoint
+    modules_after = set([m for m in sys.modules.values() if hasattr(m, "__name__")])
+    for module in modules_after - modules_before:
+        sys.modules.pop(module.__name__)
+    sys.path.remove(yolov5_folder)
+    return ckpt
 
 
 class EarlyStopping:
