@@ -11,7 +11,6 @@ import logging
 import math
 import os
 import random
-import sys
 import time
 from copy import deepcopy
 from pathlib import Path
@@ -28,8 +27,6 @@ from tqdm import tqdm
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # YOLOv5 root directory
-if str(ROOT) not in sys.path:
-    sys.path.append(str(ROOT))  # add ROOT to PATH
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
 import val  # for end-of-epoch mAP

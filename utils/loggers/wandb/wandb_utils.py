@@ -2,7 +2,6 @@
 
 import logging
 import os
-import sys
 from contextlib import contextmanager
 from pathlib import Path
 
@@ -12,8 +11,6 @@ from tqdm import tqdm
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[3]  # YOLOv5 root directory
-if str(ROOT) not in sys.path:
-    sys.path.append(str(ROOT))  # add ROOT to PATH
 
 from utils.datasets import LoadImagesAndLabels
 from utils.datasets import img2label_paths
