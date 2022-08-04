@@ -23,7 +23,6 @@ TensorFlow.js:
 import argparse
 import os
 import subprocess
-import sys
 import time
 from pathlib import Path
 
@@ -33,18 +32,16 @@ from torch.utils.mobile_optimizer import optimize_for_mobile
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # YOLOv5 root directory
-if str(ROOT) not in sys.path:
-    sys.path.append(str(ROOT))  # add ROOT to PATH
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
-from models.common import Conv
-from models.experimental import attempt_load
-from models.yolo import Detect
-from utils.activations import SiLU
-from utils.datasets import LoadImages
-from utils.general import colorstr, check_dataset, check_img_size, check_requirements, file_size, print_args, \
+from yolov5.models.common import Conv
+from yolov5.models.experimental import attempt_load
+from yolov5.models.yolo import Detect
+from yolov5.utils.activations import SiLU
+from yolov5.utils.datasets import LoadImages
+from yolov5.utils.general import colorstr, check_dataset, check_img_size, check_requirements, file_size, print_args, \
     set_logging, url2file
-from utils.torch_utils import select_device
+from yolov5.utils.torch_utils import select_device
 
 
 def export_torchscript(model, im, file, optimize, prefix=colorstr('TorchScript:')):
@@ -135,7 +132,7 @@ def export_saved_model(model, im, file, dynamic,
     try:
         import tensorflow as tf
         from tensorflow import keras
-        from models.tf import TFModel, TFDetect
+        from yolov5.models.tf import TFModel, TFDetect
 
         print(f'\n{prefix} starting export with tensorflow {tf.__version__}...')
         f = str(file).replace('.pt', '_saved_model')
@@ -182,7 +179,7 @@ def export_tflite(keras_model, im, file, int8, data, ncalib, prefix=colorstr('Te
     # YOLOv5 TensorFlow Lite export
     try:
         import tensorflow as tf
-        from models.tf import representative_dataset_gen
+        from yolov5.models.tf import representative_dataset_gen
 
         print(f'\n{prefix} starting export with tensorflow {tf.__version__}...')
         batch_size, ch, *imgsz = list(im.shape)  # BCHW
